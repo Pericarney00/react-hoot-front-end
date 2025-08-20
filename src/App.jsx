@@ -1,29 +1,53 @@
-// src/App.jsx
-import { useContext, useState } from "react";
+// Hook imports
+import { useContext, useState, useEffect } from "react";
 import { Routes, Route } from "react-router"; // Import React Router
 import { UserContext } from "./contexts/UserContext";
 
+//Component imports
 import NavBar from "./components/NavBar/NavBar";
-// Import the SignUpForm component
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import SignInForm from "./components/SignInForm/SignInForm";
 import Landing from "./components/Landing/Landing";
 import Dashboard from "./components/Dashboard/Dashboard";
+import HootList from "./components/HootList/HootList"
+// Service imports
+import * as hootService from "./services/hootService"
 
 const App = () => {
 	const { user } = useContext(UserContext);
+	const [hoots, setHoots] = useState([])
+
+
+	useEffect(() => {
+		const fetchAllHoots = async () => {
+			const hootsData = await hootService.index();
+
+			setHoots(hootsData)
+		};
+		if (user) fetchAllHoots();
+	}, [user])
+
 
 	return (
 		<>
 			<NavBar />
-			{/* Add the Routes component to wrap our individual routes*/}
 			<Routes>
-				<Route path="/" element={user ? <Dashboard /> : <Landing />} />
-				<Route path="/sign-up" element={<SignUpForm />} />
-				<Route path="/sign-in" element={<SignInForm />} />
+				<Route path='/' element={user ? <Dashboard /> : <Landing />} />
+				{user ? (
+					<>
+						{/* Protected routes (available only to signed-in users) */}
+						<Route path='/hoots' element={<HootList hoots={hoots} />} />
+					</>
+				) : (
+					<>
+						{/* Non-user routes (available only to guests) */}
+						<Route path='/sign-up' element={<SignUpForm />} />
+						<Route path='/sign-in' element={<SignInForm />} />
+					</>
+				)}
 			</Routes>
 		</>
 	);
 };
 
-export default App;
+export default App
