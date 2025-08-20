@@ -1,6 +1,6 @@
 // Hook imports
 import { useContext, useState, useEffect } from "react";
-import { Routes, Route } from "react-router"; // Import React Router
+import { Routes, Route, useNavigate } from "react-router"; // Import React Router
 import { UserContext } from "./contexts/UserContext";
 
 //Component imports
@@ -11,14 +11,17 @@ import Landing from "./components/Landing/Landing";
 import Dashboard from "./components/Dashboard/Dashboard";
 import HootList from "./components/HootList/HootList"
 import HootDetails from "./components/HootDetails/HootDetails";
+import HootForm from "./components/HootForm/HootForm";
 
 // Service imports
 import * as hootService from "./services/hootService"
+
 
 const App = () => {
 	const { user } = useContext(UserContext);
 	const [hoots, setHoots] = useState([])
 
+	const navigate =useNavigate()
 
 	useEffect(() => {
 		const fetchAllHoots = async () => {
@@ -30,6 +33,13 @@ const App = () => {
 	}, [user])
 
 
+	const handleAddHoot = async (hootFormData) => {
+		const newHoot = await hootService.create(hootFormData);
+    setHoots([newHoot, ...hoots]);
+    navigate("/hoots");
+
+	}
+
 	return (
     <>
       <NavBar />
@@ -40,6 +50,7 @@ const App = () => {
             {/* Protected routes (available only to signed-in users) */}
             <Route path="/hoots" element={<HootList hoots={hoots} />} />
             <Route path="/hoots/:hootId" element={<HootDetails />} />
+						<Route path="/hoots/new" element={<HootForm handleAddHoot={ handleAddHoot} />} />
           </>
         ) : (
           <>
