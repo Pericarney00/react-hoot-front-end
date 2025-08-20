@@ -10,6 +10,8 @@ import SignInForm from "./components/SignInForm/SignInForm";
 import Landing from "./components/Landing/Landing";
 import Dashboard from "./components/Dashboard/Dashboard";
 import HootList from "./components/HootList/HootList"
+import HootDetails from "./components/HootDetails/HootDetails";
+
 // Service imports
 import * as hootService from "./services/hootService"
 
@@ -29,25 +31,26 @@ const App = () => {
 
 
 	return (
-		<>
-			<NavBar />
-			<Routes>
-				<Route path='/' element={user ? <Dashboard /> : <Landing />} />
-				{user ? (
-					<>
-						{/* Protected routes (available only to signed-in users) */}
-						<Route path='/hoots' element={<HootList hoots={hoots} />} />
-					</>
-				) : (
-					<>
-						{/* Non-user routes (available only to guests) */}
-						<Route path='/sign-up' element={<SignUpForm />} />
-						<Route path='/sign-in' element={<SignInForm />} />
-					</>
-				)}
-			</Routes>
-		</>
-	);
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={user ? <Dashboard /> : <Landing />} />
+        {user ? (
+          <>
+            {/* Protected routes (available only to signed-in users) */}
+            <Route path="/hoots" element={<HootList hoots={hoots} />} />
+            <Route path="/hoots/:hootId" element={<HootDetails />} />
+          </>
+        ) : (
+          <>
+            {/* Non-user routes (available only to guests) */}
+            <Route path="/sign-up" element={<SignUpForm />} />
+            <Route path="/sign-in" element={<SignInForm />} />
+          </>
+        )}
+      </Routes>
+    </>
+  );
 };
 
 export default App
