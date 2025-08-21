@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 
@@ -43,7 +43,16 @@ const HootDetails = (props) => {
           </p>
           {hoot.author._id === user._id && (
             <>
-            <button onClick={()=>{props.handleDeleteHoot(hootId)}}> Delete </button>
+              <Link to={`/hoots/${hootId}/edit`}>Edit</Link>
+
+              <button
+                onClick={() => {
+                  props.handleDeleteHoot(hootId);
+                }}
+              >
+                {" "}
+                Delete{" "}
+              </button>
             </>
           )}
         </header>
@@ -52,7 +61,7 @@ const HootDetails = (props) => {
       <section>
         <h2>Comments</h2>
         {/* Make use of the CommentForm component */}
-        <CommentForm handleAddComment={ handleAddComment} />
+        <CommentForm handleAddComment={handleAddComment} />
 
         {!hoot.comments.length && <p>There are no comments.</p>}
 
